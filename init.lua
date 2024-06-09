@@ -4,15 +4,15 @@
 -- [[ Setting options ]]
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
-vim.opt.tabstop = 4
-vim.opt.softtabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
 vim.g.have_nerd_font = true
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.colorcolumn = "80"
 vim.opt.scrolloff = 8
+vim.opt.tabstop = 4
+vim.opt.softtabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.expandtab = false
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = "a"
@@ -583,7 +583,6 @@ require("lazy").setup({
 					["<C-n>"] = cmp.mapping.select_next_item(),
 					-- Select the [p]revious item
 					["<C-p>"] = cmp.mapping.select_prev_item(),
-
 					-- Scroll the documentation window [b]ack / [f]orward
 					["<C-b>"] = cmp.mapping.scroll_docs(-4),
 					["<C-f>"] = cmp.mapping.scroll_docs(4),
@@ -631,7 +630,10 @@ require("lazy").setup({
 	{
 		-- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
 		"rose-pine/neovim",
-
+		setup = {
+			disable_background = true,
+			disable_float_background = true,
+		},
 		priority = 1000, -- Make sure to load this before all the other start plugins.
 		init = function()
 			vim.cmd.colorscheme("rose-pine")
@@ -665,7 +667,7 @@ require("lazy").setup({
 			-- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
 			-- - sd'   - [S]urround [D]elete [']quotes
 			-- - sr)'  - [S]urround [R]eplace [)] [']
-			require("mini.surround").setup()
+			-- require("mini.surround").setup()
 
 			-- Simple and easy statusline.
 			--  You could remove this setup call if you don't like it,
