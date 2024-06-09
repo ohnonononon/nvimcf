@@ -628,16 +628,31 @@ require("lazy").setup({
 		end,
 	},
 	{
-		-- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
 		"rose-pine/neovim",
-		setup = {
-			disable_background = true,
-			disable_float_background = true,
-		},
+		name = "rose-pine",
 		priority = 1000, -- Make sure to load this before all the other start plugins.
 		init = function()
+			require("rose-pine").setup({
+				disable_background = false,
+				variant = "main", -- auto, main, moon, or dawn
+				dim_inactive_windows = false,
+				enable = {
+					terminal = true,
+					legacy_highlights = true, -- Improve compatibility for previous versions of Neovim
+					migrations = true, -- Handle deprecated options automatically
+				},
+				styles = {
+					bold = true,
+					italic = false,
+					transparency = false,
+				},
+				highlight_groups = {
+					-- Blend colours against the "base" background
+					CursorLine = { bg = "foam", blend = 10 },
+					StatusLine = { fg = "love", bg = "love", blend = 10 },
+				},
+			})
 			vim.cmd.colorscheme("rose-pine")
-
 			-- You can configure highlights by doing something like:
 			vim.cmd.hi("Comment gui=none")
 		end,
