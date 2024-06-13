@@ -4,7 +4,7 @@
 -- [[ Setting options ]]
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
-vim.g.have_nerd_font = true
+vim.g.have_nerd_font = false
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.colorcolumn = "80"
@@ -63,6 +63,7 @@ vim.opt.cursorline = true
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
 vim.keymap.set("n", "<C-c>", "<cmd>nohl<CR>")
+vim.keymap.set("n", "q", "<nop>")
 
 -- Navigate through buffers and files
 vim.keymap.set("n", "<leader>bd", "<cmd>bd<CR>")
@@ -70,6 +71,13 @@ vim.keymap.set("n", "<leader>bw", "<cmd>bw<CR>")
 vim.keymap.set("n", "<leader>k", "<cmd>bnext<CR>")
 vim.keymap.set("n", "<leader>j", "<cmd>bprev<CR>")
 vim.keymap.set("n", "<leader>pv", "<cmd>Explore<CR>")
+vim.keymap.set("n", "<leader>ex", "<cmd>.!sh<CR>")
+--
+-- terminal keymaps
+vim.keymap.set("t", "<C-h>", "<C-\\><C-N><C-h>")
+vim.keymap.set("t", "<C-l>", "<C-\\><C-N><C-l>")
+vim.keymap.set("t", "<C-j>", "<C-\\><C-N><C-j>")
+vim.keymap.set("t", "<C-k>", "<C-\\><C-N><C-k>")
 
 -- Git integration cmds
 vim.keymap.set("n", "<leader>gp", "<cmd>Git push<CR>")
@@ -647,7 +655,12 @@ require("lazy").setup({
 					transparency = false,
 				},
 				highlight_groups = {
-					-- Blend colours against the "base" background
+					TelescopeBorder = { fg = "highlight_high", bg = "none" },
+					TelescopeNormal = { bg = "none" },
+					TelescopePromptNormal = { bg = "base" },
+					TelescopeResultsNormal = { fg = "subtle", bg = "none" },
+					TelescopeSelection = { fg = "text", bg = "base" },
+					TelescopeSelectionCaret = { fg = "rose", bg = "rose" },
 					CursorLine = { bg = "foam", blend = 10 },
 					StatusLine = { fg = "love", bg = "love", blend = 10 },
 				},
@@ -707,9 +720,9 @@ require("lazy").setup({
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
 		opts = {
-			ensure_installed = { "bash", "c", "html", "lua", "luadoc", "markdown", "vim", "vimdoc" },
+			ensure_installed = { "bash", "c", "lua", "luadoc", "vim", "vimdoc" },
 			-- Autoinstall languages that are not installed
-			auto_install = false,
+			auto_install = true,
 			highlight = {
 				enable = true,
 				-- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
