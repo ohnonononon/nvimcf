@@ -20,9 +20,26 @@ vim.opt.mouse = "a"
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
 
+-- WSL clipboard integration, goes along its shortcuts
+vim.g.clipboard = {
+	name = "WslClipboard",
+	copy = {
+		["+"] = "clip.exe",
+		["*"] = "clip.exe",
+	},
+	paste = {
+		["+"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+		["*"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+	},
+	cache_enabled = 0,
+}
+
 -- Sync clipboard between OS and Neovim.
-vim.opt.clipboard = "unnamedplus"
 vim.opt.breakindent = true
+
+-- Clipboard cmds
+vim.keymap.set({ "n", "v" }, "<leader>y", [["*y]])
+vim.keymap.set("n", "<leader>Y", [["*Y]])
 
 -- Save undo history
 vim.opt.undofile = true
@@ -184,23 +201,23 @@ require("lazy").setup({
 	-- after the plugin has been loaded:
 	--  config = function() ... end
 
-	{ -- Useful plugin to show you pending keybinds.
-		"folke/which-key.nvim",
-		event = "VimEnter", -- Sets the loading event to 'VimEnter'
-		config = function() -- This is the function that runs, AFTER loading
-			require("which-key").setup()
-
-			-- Document existing key chains
-			require("which-key").register({
-				["<leader>c"] = { name = "[C]ode", _ = "which_key_ignore" },
-				["<leader>d"] = { name = "[D]ocument", _ = "which_key_ignore" },
-				["<leader>r"] = { name = "[R]ename", _ = "which_key_ignore" },
-				["<leader>s"] = { name = "[S]earch", _ = "which_key_ignore" },
-				["<leader>w"] = { name = "[W]orkspace", _ = "which_key_ignore" },
-			})
-		end,
-	},
-
+	-- {                   -- Useful plugin to show you pending keybinds.
+	--   "folke/which-key.nvim",
+	--   event = "VimEnter", -- Sets the loading event to 'VimEnter'
+	--   config = function() -- This is the function that runs, AFTER loading
+	--     require("which-key").setup()
+	--
+	--     -- Document existing key chains
+	--     require("which-key").register({
+	--       ["<leader>c"] = { name = "[C]ode", _ = "which_key_ignore" },
+	--       ["<leader>d"] = { name = "[D]ocument", _ = "which_key_ignore" },
+	--       ["<leader>r"] = { name = "[R]ename", _ = "which_key_ignore" },
+	--       ["<leader>s"] = { name = "[S]earch", _ = "which_key_ignore" },
+	--       ["<leader>w"] = { name = "[W]orkspace", _ = "which_key_ignore" },
+	--     })
+	--   end,
+	-- },
+	--
 	-- NOTE: Plugins can specify dependencies.
 	--
 	-- Use the `dependencies` key to specify the dependencies of a particular plugin
@@ -642,7 +659,7 @@ require("lazy").setup({
 		init = function()
 			require("rose-pine").setup({
 				disable_background = false,
-				variant = "main", -- auto, main, moon, or dawn
+				variant = "moon", -- auto, main, moon, or dawn
 				dim_inactive_windows = false,
 				enable = {
 					terminal = true,
