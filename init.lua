@@ -1,14 +1,15 @@
 --    - :help lua-guide
 --    - (or HTML version): https://neovim.io/doc/user/lua-guide.html
 
+-- require("custom.plugins.clipboard")
 -- [[ Setting options ]]
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.colorcolumn = "80"
-vim.opt.scrolloff = 8
+vim.opt.scrolloff = 12
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
@@ -20,26 +21,9 @@ vim.opt.mouse = "a"
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
 
--- WSL clipboard integration, goes along its shortcuts
-vim.g.clipboard = {
-	name = "WslClipboard",
-	copy = {
-		["+"] = "clip.exe",
-		["*"] = "clip.exe",
-	},
-	paste = {
-		["+"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-		["*"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-	},
-	cache_enabled = 0,
-}
-
 -- Sync clipboard between OS and Neovim.
+vim.opt.clipboard = "unnamedplus"
 vim.opt.breakindent = true
-
--- Clipboard cmds
-vim.keymap.set({ "n", "v" }, "<leader>y", [["*y]])
-vim.keymap.set("n", "<leader>Y", [["*Y]])
 
 -- Save undo history
 vim.opt.undofile = true
@@ -72,7 +56,7 @@ vim.opt.inccommand = "split"
 
 -- The lord true bloated and obscure replace keymap hotkey
 -- deprecated, since <leader>rn but aint much sexy
--- vim.keymap.set("n", "<leader>rk", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+vim.keymap.set("n", "<leader>rk", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 
 -- Show which line your cursor is on
 vim.opt.cursorline = true
@@ -83,7 +67,8 @@ vim.keymap.set("n", "<C-c>", "<cmd>nohl<CR>")
 vim.keymap.set("n", "q", "<nop>")
 
 -- Navigate through buffers and files
-vim.keymap.set("n", "<leader>bd", "<cmd>bd<CR>")
+vim.keymap.set("n", "<leader>z", "zz")
+vim.keymap.set("n", "<leader>x", "<cmd>bd<CR>")
 vim.keymap.set("n", "<leader>bw", "<cmd>bw<CR>")
 vim.keymap.set("n", "<leader>k", "<cmd>bnext<CR>")
 vim.keymap.set("n", "<leader>j", "<cmd>bprev<CR>")
@@ -99,7 +84,6 @@ vim.keymap.set("t", "<C-k>", "<C-\\><C-N><C-k>")
 -- Git integration cmds
 vim.keymap.set("n", "<leader>gp", "<cmd>Git push<CR>")
 
--- Diagnostic keymaps
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous [D]iagnostic message" })
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next [D]iagnostic message" })
 vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostic [E]rror messages" })
@@ -164,6 +148,7 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
 	-- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
 	"tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
+
 	"42Paris/42header",
 	{
 		"tpope/vim-fugitive", -- Detect tabstop and shiftwidth automatically
@@ -201,21 +186,26 @@ require("lazy").setup({
 	-- after the plugin has been loaded:
 	--  config = function() ... end
 
-	-- {                   -- Useful plugin to show you pending keybinds.
-	--   "folke/which-key.nvim",
-	--   event = "VimEnter", -- Sets the loading event to 'VimEnter'
-	--   config = function() -- This is the function that runs, AFTER loading
-	--     require("which-key").setup()
+	-- { -- Useful plugin to show you pending keybinds.
+	-- 	"folke/which-key.nvim",
+	-- 	event = "VimEnter", -- Sets the loading event to 'VimEnter'
+	-- 	config = function() -- This is the function that runs, AFTER loading
+	-- 		require("which-key").setup()
 	--
-	--     -- Document existing key chains
-	--     require("which-key").register({
-	--       ["<leader>c"] = { name = "[C]ode", _ = "which_key_ignore" },
-	--       ["<leader>d"] = { name = "[D]ocument", _ = "which_key_ignore" },
-	--       ["<leader>r"] = { name = "[R]ename", _ = "which_key_ignore" },
-	--       ["<leader>s"] = { name = "[S]earch", _ = "which_key_ignore" },
-	--       ["<leader>w"] = { name = "[W]orkspace", _ = "which_key_ignore" },
-	--     })
-	--   end,
+	-- 		-- Document existing key chains
+	-- 		require("which-key").register({
+	-- 			{ "<leader>c", group = "[C]ode" },
+	-- 			{ "<leader>c_", hidden = true },
+	-- 			{ "<leader>d", group = "[D]ocument" },
+	-- 			{ "<leader>d_", hidden = true },
+	-- 			{ "<leader>r", group = "[R]ename" },
+	-- 			{ "<leader>r_", hidden = true },
+	-- 			{ "<leader>s", group = "[S]earch" },
+	-- 			{ "<leader>s_", hidden = true },
+	-- 			{ "<leader>w", group = "[W]orkspace" },
+	-- 			{ "<leader>w_", hidden = true },
+	-- 		})
+	-- 	end,
 	-- },
 	--
 	-- NOTE: Plugins can specify dependencies.
@@ -463,7 +453,7 @@ require("lazy").setup({
 			--  - settings (table): Override the default settings passed when initializing the server.
 			--        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
 			local servers = {
-				-- clangd = {},
+				clangd = {},
 				-- gopls = {},
 				-- pyright = {},
 				-- rust_analyzer = {},
@@ -658,7 +648,7 @@ require("lazy").setup({
 		priority = 1000, -- Make sure to load this before all the other start plugins.
 		init = function()
 			require("rose-pine").setup({
-				disable_background = false,
+				disable_background = true,
 				variant = "moon", -- auto, main, moon, or dawn
 				dim_inactive_windows = false,
 				enable = {
@@ -669,7 +659,7 @@ require("lazy").setup({
 				styles = {
 					bold = true,
 					italic = false,
-					transparency = false,
+					transparency = true,
 				},
 				highlight_groups = {
 					TelescopeBorder = { fg = "highlight_high", bg = "none" },
@@ -719,7 +709,7 @@ require("lazy").setup({
 			--  and try some other statusline plugin
 			local statusline = require("mini.statusline")
 			-- set use_icons to true if you have a Nerd Font
-			statusline.setup({ use_icons = vim.g.have_nerd_font })
+			-- statusline.setup({ use_icons = vim.g.have_nerd_font })
 
 			-- You can configure sections in the statusline by overriding their
 			-- default behavior. For example, here we set the section for
@@ -745,9 +735,9 @@ require("lazy").setup({
 				-- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
 				--  If you are experiencing weird indenting issues, add the language to
 				--  the list of additional_vim_regex_highlighting and disabled languages for indent.
-				additional_vim_regex_highlighting = { "ruby" },
+				additional_vim_regex_highlighting = { "" },
 			},
-			indent = { enable = true, disable = { "ruby" } },
+			indent = { enable = true, disable = { "" } },
 		},
 		config = function(_, opts)
 			-- [[ Configure Treesitter ]] See `:help nvim-treesitter`
@@ -772,7 +762,7 @@ require("lazy").setup({
 	--
 	--  Here are some example plugins that I've included in the Kickstart repository.
 	--  Uncomment any of the lines below to enable them (you will need to restart nvim).
-	--
+
 	-- require 'kickstart.plugins.debug',
 	-- require 'kickstart.plugins.indent_line',
 	-- require 'kickstart.plugins.lint',
@@ -782,7 +772,6 @@ require("lazy").setup({
 	--
 	--  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
 	--    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
-	--	{ import = "custom.plugins" },
 }, {
 	ui = {
 		-- If you are using a Nerd Font: set icons to an empty table which will use the
