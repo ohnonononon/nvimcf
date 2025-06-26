@@ -40,7 +40,7 @@ vim.opt.updatetime = 250
 
 -- Decrease mapped sequence wait time
 -- Displays which-key popup sooner
-vim.opt.timeoutlen = 300
+vim.opt.timeoutlen = 500
 
 -- Configure how new splits should be opened
 vim.opt.splitright = true
@@ -56,7 +56,9 @@ vim.opt.inccommand = "split"
 
 -- The lord true bloated and obscure replace keymap hotkey
 -- deprecated, since <leader>rn but aint much sexy
+--                        HOTKEYS
 vim.keymap.set("n", "<leader>rk", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+vim.keymap.set("n", "<leader>Y", [["+Y]])
 
 -- Show which line your cursor is on
 vim.opt.cursorline = true
@@ -82,7 +84,7 @@ vim.keymap.set("t", "<C-j>", "<C-\\><C-N><C-j>")
 vim.keymap.set("t", "<C-k>", "<C-\\><C-N><C-k>")
 
 -- Git integration cmds
-vim.keymap.set("n", "<leader>gp", "<cmd>silent Git push<CR>")
+vim.keymap.set("n", "<leader>gp", "<cmd>silent Git push | q<CR>")
 
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous [D]iagnostic message" })
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next [D]iagnostic message" })
@@ -147,8 +149,6 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
 	-- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
-	"tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
-
 	"42Paris/42header",
 	{
 		"tpope/vim-fugitive", -- Detect tabstop and shiftwidth automatically
@@ -259,11 +259,15 @@ require("lazy").setup({
 				-- You can put your default mappings / updates / etc. in here
 				--  All the info you're looking for is in `:help telescope.setup()`
 				--
-				-- defaults = {
-				--   mappings = {
-				--     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-				--   },
-				-- },
+				defaults = {
+					file_ignore_patterns = {
+						"%.o",
+						"%.d",
+					},
+					mappings = {
+						i = { ["<c-enter>"] = "to_fuzzy_refine" },
+					},
+				},
 				-- pickers = {}
 				extensions = {
 					["ui-select"] = {
