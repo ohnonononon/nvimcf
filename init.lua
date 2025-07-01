@@ -54,11 +54,13 @@ vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 -- Preview substitutions live, as you type!
 vim.opt.inccommand = "split"
 
--- The lord true bloated and obscure replace keymap hotkey
--- deprecated, since <leader>rn but aint much sexy
 --                        HOTKEYS
+-- replace all instances of word hovered by cursor
 vim.keymap.set("n", "<leader>rk", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+
+-- Save in + register
 vim.keymap.set("n", "<leader>Y", [["+Y]])
+vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
 
 -- Show which line your cursor is on
 vim.opt.cursorline = true
@@ -67,6 +69,23 @@ vim.opt.cursorline = true
 vim.opt.hlsearch = true
 vim.keymap.set("n", "<C-c>", "<cmd>nohl<CR>")
 vim.keymap.set("n", "q", "<nop>")
+
+-- focus to keep the cursor at the center of the screen
+local function toggle_focus()
+	local focus_state = "off"
+	if focus_state == "off" then
+		vim.keymap.set("n", "k", "kzz")
+		vim.keymap.set("n", "j", "jzz")
+		vim.keymap.set("n", "<C-d>", "<C-d>zz")
+		vim.keymap.set("n", "<C-u>", "<C-u>zz")
+		focus_state = "on"
+	else
+		vim.keymap.set("n", "k", "k")
+		vim.keymap.set("n", "j", "j")
+		focus_state = "off"
+	end
+end
+vim.keymap.set("n", "<leader>t", toggle_focus)
 
 -- Navigate through buffers and files
 vim.keymap.set("n", "<leader>z", "zz")
@@ -282,6 +301,7 @@ require("lazy").setup({
 
 			-- See `:help telescope.builtin`
 			local builtin = require("telescope.builtin")
+
 			vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "[S]earch [H]elp" })
 			vim.keymap.set("n", "<leader>sk", builtin.keymaps, { desc = "[S]earch [K]eymaps" })
 			vim.keymap.set("n", "<leader>sf", builtin.find_files, { desc = "[S]earch [F]iles" })
@@ -519,6 +539,7 @@ require("lazy").setup({
 
 	{ -- Autoformat
 		"stevearc/conform.nvim",
+		event = { "BufWritePre" },
 		opts = {
 			notify_on_error = false,
 			format_on_save = function(bufnr)
@@ -713,7 +734,7 @@ require("lazy").setup({
 			--  and try some other statusline plugin
 			local statusline = require("mini.statusline")
 			-- set use_icons to true if you have a Nerd Font
-			-- statusline.setup({ use_icons = vim.g.have_nerd_font })
+			statusline.setup({ use_icons = vim.g.have_nerd_font })
 
 			-- You can configure sections in the statusline by overriding their
 			-- default behavior. For example, here we set the section for
