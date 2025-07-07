@@ -167,7 +167,70 @@ vim.opt.rtp:prepend(lazypath)
 -- keys can be used to configure plugin behavior/loading/etc.
 
 require("lazy").setup({
-	-- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
+	{
+		"mfussenegger/nvim-dap",
+		dependencies = {
+			"rcarriga/nvim-dap-ui",
+			"nvim-neotest/nvim-nio",
+			"mason-org/mason.nvim",
+			"jay-babu/mason-nvim-dap.nvim",
+			"theHamsta/nvim-dap-virtual-text",
+		},
+		config = function()
+			local dap = require("dap")
+
+			-- DAP Adapter for codelldb
+			dap.adapters.codelldb = {
+				type = "executable",
+				command = "codelldb", -- or full path to codelldb
+			}
+
+			-- C/C++ Configurations
+			dap.configurations.c = {
+				{
+					name = "Launch file",
+					type = "codelldb",
+					request = "launch",
+					program = function()
+						return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+					end,
+					cwd = "${workspaceFolder}",
+					stopOnEntry = false,
+				},
+			}
+
+			-- Optional: Use same config for C++
+			dap.configurations.cpp = dap.configurations.c
+
+			-- Optional: Enable UI and virtual text
+			require("nvim-dap-virtual-text").setup()
+			require("dapui").setup()
+		end,
+
+		keys = {
+			{
+				"<leader>dc",
+				function()
+					require("dap").continue()
+				end,
+				desc = "DAP Continue",
+			},
+			{
+				"<leader>db",
+				function()
+					require("dap").toggle_breakpoint()
+				end,
+				desc = "DAP Toggle Breakpoint",
+			},
+			{
+				"<leader>du",
+				function()
+					require("dapui").toggle()
+				end,
+				desc = "DAP UI Toggle",
+			},
+		},
+	},
 	"42Paris/42header",
 	{
 		"tpope/vim-fugitive", -- Detect tabstop and shiftwidth automatically
