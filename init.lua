@@ -168,68 +168,9 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
 	{
-		"mfussenegger/nvim-dap",
-		dependencies = {
-			"rcarriga/nvim-dap-ui",
-			"nvim-neotest/nvim-nio",
-			"mason-org/mason.nvim",
-			"jay-babu/mason-nvim-dap.nvim",
-			"theHamsta/nvim-dap-virtual-text",
-		},
-		config = function()
-			local dap = require("dap")
-
-			-- DAP Adapter for codelldb
-			dap.adapters.codelldb = {
-				type = "executable",
-				command = "codelldb", -- or full path to codelldb
-			}
-
-			-- C/C++ Configurations
-			dap.configurations.c = {
-				{
-					name = "Launch file",
-					type = "codelldb",
-					request = "launch",
-					program = function()
-						return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
-					end,
-					cwd = "${workspaceFolder}",
-					stopOnEntry = false,
-				},
-			}
-
-			-- Optional: Use same config for C++
-			dap.configurations.cpp = dap.configurations.c
-
-			-- Optional: Enable UI and virtual text
-			require("nvim-dap-virtual-text").setup()
-			require("dapui").setup()
-		end,
-
-		keys = {
-			{
-				"<leader>dc",
-				function()
-					require("dap").continue()
-				end,
-				desc = "DAP Continue",
-			},
-			{
-				"<leader>db",
-				function()
-					require("dap").toggle_breakpoint()
-				end,
-				desc = "DAP Toggle Breakpoint",
-			},
-			{
-				"<leader>du",
-				function()
-					require("dapui").toggle()
-				end,
-				desc = "DAP UI Toggle",
-			},
-		},
+		"ThePrimeagen/harpoon",
+		branch = "harpoon2",
+		dependencies = { "nvim-lua/plenary.nvim" },
 	},
 	"42Paris/42header",
 	{
@@ -831,15 +772,12 @@ require("lazy").setup({
 	-- require 'kickstart.plugins.indent_line',
 	-- require 'kickstart.plugins.lint',
 
-	-- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
-	--    This is the easiest way to modularize your config.
-	--
-	--  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-	--    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
+	{
+		require("plugins.dap"),
+		{ import = "plugins" },
+	},
 }, {
 	ui = {
-		-- If you are using a Nerd Font: set icons to an empty table which will use the
-		-- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
 		icons = vim.g.have_nerd_font and {} or {
 			cmd = "⌘",
 			config = "🛠",
@@ -857,6 +795,3 @@ require("lazy").setup({
 		},
 	},
 })
---
--- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=2 sts=2 sw=2 et
