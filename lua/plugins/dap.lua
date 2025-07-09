@@ -8,35 +8,35 @@ return {
 		"theHamsta/nvim-dap-virtual-text",
 	},
 	config = function()
-		local dap = require 'dap'
-		local dapui = require 'dapui'
+		local dap = require("dap")
+		local dapui = require("dapui")
 
-		require('mason-nvim-dap').setup{
-		automatic_installation = true,
+		require("mason-nvim-dap").setup({
+			automatic_installation = true,
 			handlers = {},
 			ensure_installed = {
-			'codelldb',
+				"codelldb",
 			},
-		}
-	dapui.setup {
-		icons = { expanded = '▾', collapsed = '▸', current_frame = '*' },
-		controls = {
-			icons = {
-				pause = '⏸',
-				play = '▶',
-				step_into = '⏎',
-				step_over = '⏭',
-				step_out = '⏮',
-				step_back = 'b',
-				run_last = '▶▶',
-				terminate = '⏹',
-				disconnect = '⏏',
+		})
+		dapui.setup({
+			icons = { expanded = "▾", collapsed = "▸", current_frame = "*" },
+			controls = {
+				icons = {
+					pause = "⏸",
+					play = "▶",
+					step_into = "⏎",
+					step_over = "⏭",
+					step_out = "⏮",
+					step_back = "b",
+					run_last = "▶▶",
+					terminate = "⏹",
+					disconnect = "⏏",
+				},
 			},
-		},
-		}
-		dap.listeners.after.event_initialized['dapui_config'] = dapui.open
-		dap.listeners.before.event_terminated['dapui_config'] = dapui.close
-		dap.listeners.before.event_exited['dapui_config'] = dapui.close
+		})
+		dap.listeners.after.event_initialized["dapui_config"] = dapui.open
+		dap.listeners.before.event_terminated["dapui_config"] = dapui.close
+		dap.listeners.before.event_exited["dapui_config"] = dapui.close
 		-- DAP Adapter for codelldb
 		dap.adapters.codelldb = {
 			type = "executable",
@@ -62,66 +62,86 @@ return {
 
 		-- Optional: Enable UI and virtual text
 		require("nvim-dap-virtual-text").setup()
-		require("dapui").setup()
 	end,
 
 	keys = {
-   {
-      '<leader>dc',
-      function()
-        require('dap').continue()
-      end,
-      desc = 'Debug: Start/Continue',
-    },
-    {
-      '<leader>si',
-      function()
-        require('dap').step_into()
-      end,
-      desc = 'Debug: Step Into',
-    },
-    {
-      '<leader>sv',
-      function()
-        require('dap').step_over()
-      end,
-      desc = 'Debug: Step Over',
-    },
-    {
-      '<leader>so',
-      function()
-        require('dap').step_out()
-      end,
-      desc = 'Debug: Step Out',
-    },
-    {
-      '<leader>b',
-      function()
-        require('dap').toggle_breakpoint()
-      end,
-      desc = 'Debug: Toggle Breakpoint',
-    },
-    {
-      '<leader>B',
-      function()
-        require('dap').set_breakpoint(vim.fn.input 'Breakpoint condition: ')
-      end,
-      desc = 'Debug: Set Breakpoint',
-    },
-    {
-      '<leader>d1',
-      function()
-        require('dap').run_last()
-      end,
-      desc = 'Debug:Run Last Configuration.',
-    },
-    -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
-    {
-      '<leader>',
-      function()
-        require('dapui').toggle()
-      end,
-      desc = 'Debug: See last session result.',
-    },
+		{
+			"<leader>D!",
+			function()
+				require("dap").continue()
+			end,
+			desc = "Debug: Start/Continue",
+		},
+		{
+			"<leader>D)",
+			function()
+				require("dap").terminate()
+			end,
+			desc = "Debug: terminate",
+		},
+		{
+			"<leader>D@",
+			function()
+				require("dap").run_to_cursor()
+			end,
+			desc = "Debug: run-to-cursor",
+		},
+		{
+			"<leader>D(",
+			function()
+				require("dap").restart()()
+			end,
+			desc = "Debug: restart",
+		},
+		{
+			"<leader>DI",
+			function()
+				require("dap").step_into()
+			end,
+			desc = "Debug: Step Into",
+		},
+		{
+			"<leader>DN",
+			function()
+				require("dap").step_over()
+			end,
+			desc = "Debug: Step Over",
+		},
+		{
+			"<leader>DO",
+			function()
+				require("dap").step_out()
+			end,
+			desc = "Debug: Step Out",
+		},
+		{
+			"<leader>db",
+			function()
+				require("dap").toggle_breakpoint()
+			end,
+			desc = "Debug: Toggle Breakpoint",
+		},
+		{
+			"<leader>B",
+			function()
+				require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
+			end,
+			desc = "Debug: Set Breakpoint",
+		},
+		{
+			"<leader>D~",
+			function()
+				require("dap").run_last()
+			end,
+			desc = "Debug: Run Last Configuration.",
+		},
+		-- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
+		{
+			"<leader>dt",
+			function()
+				require("dapui").toggle()
+			end,
+			desc = "Debug: See last session result.",
+		},
 	},
 }
