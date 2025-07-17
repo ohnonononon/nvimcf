@@ -14,6 +14,7 @@ vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = false
+vim.opt.swapfile = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = "a"
@@ -21,6 +22,19 @@ vim.opt.mouse = "a"
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
 
+-- clipboard integration in windows
+-- vim.g.clipboard = {
+-- 	name = "WslClipboard",
+-- 	copy = {
+-- 		["+"] = "clip.exe",
+-- 		["*"] = "clip.exe",
+-- 	},
+-- 	paste = {
+-- 		["+"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+-- 		["*"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+-- 	},
+-- 	cache_enabled = 0,
+-- }
 -- Sync clipboard between OS and Neovim.
 vim.opt.clipboard = "unnamedplus"
 vim.opt.breakindent = true
