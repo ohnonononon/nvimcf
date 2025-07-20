@@ -66,49 +66,49 @@ return {
 
 	keys = {
 		{
-			"<leader>D!",
+			"<leader>d1",
 			function()
 				require("dap").continue()
 			end,
 			desc = "Debug: Start/Continue",
 		},
 		{
-			"<leader>D)",
+			"<leader>d0",
 			function()
 				require("dap").terminate()
 			end,
 			desc = "Debug: terminate",
 		},
 		{
-			"<leader>D@",
+			"<leader>d2",
 			function()
 				require("dap").run_to_cursor()
 			end,
 			desc = "Debug: run-to-cursor",
 		},
 		{
-			"<leader>D(",
+			"<leader>d9",
 			function()
 				require("dap").restart()()
 			end,
 			desc = "Debug: restart",
 		},
 		{
-			"<leader>DI",
+			"<leader>dl",
 			function()
 				require("dap").step_into()
 			end,
 			desc = "Debug: Step Into",
 		},
 		{
-			"<leader>DN",
+			"<leader>dj",
 			function()
 				require("dap").step_over()
 			end,
 			desc = "Debug: Step Over",
 		},
 		{
-			"<leader>DO",
+			"<leader>dh",
 			function()
 				require("dap").step_out()
 			end,
@@ -129,7 +129,7 @@ return {
 			desc = "Debug: Set Breakpoint",
 		},
 		{
-			"<leader>D~",
+			"<leader>d`",
 			function()
 				require("dap").run_last()
 			end,
