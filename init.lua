@@ -9,7 +9,7 @@ vim.g.have_nerd_font = true
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.colorcolumn = "80"
-vim.opt.scrolloff = 12
+vim.opt.scrolloff = 999
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
@@ -98,6 +98,7 @@ local function toggle_focus()
 		vim.keymap.set("n", "j", "j")
 		focus_state = "off"
 	end
+	vim.cmd("toggle_focus")
 end
 vim.keymap.set("n", "<leader>t", toggle_focus)
 
