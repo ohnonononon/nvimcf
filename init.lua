@@ -102,11 +102,10 @@ end
 vim.keymap.set("n", "<leader>t", toggle_focus)
 
 -- Navigate through buffers and files
-vim.keymap.set("n", "<leader>z", "zz")
-vim.keymap.set("n", "<leader>x", "<cmd>bd<CR>")
+vim.keymap.set("n", "<leader>x", "<cmd>b#<bar>bd#<CR>")
 vim.keymap.set("n", "<leader>bw", "<cmd>bw<CR>")
-vim.keymap.set("n", "<leader>k", "<cmd>bnext<CR>")
-vim.keymap.set("n", "<leader>j", "<cmd>bprev<CR>")
+vim.keymap.set("n", "<leader>k", "<cmd>bnext<CR>zz<CR>")
+vim.keymap.set("n", "<leader>j", "<cmd>bprev<CR>zz<CR>")
 vim.keymap.set("n", "<leader>pv", "<cmd>Explore<CR>")
 vim.keymap.set("n", "<leader>ex", "<cmd>.!sh<CR>")
 --
@@ -185,6 +184,21 @@ require("lazy").setup({
 		"ThePrimeagen/harpoon",
 		branch = "harpoon2",
 		dependencies = { "nvim-lua/plenary.nvim" },
+	},
+	{
+		"folke/zen-mode.nvim",
+		config = function()
+			require("zen-mode").setup({
+				window = {
+					width = 100,
+					options = {
+						number = true,
+						relativenumber = true,
+					},
+				},
+			})
+			vim.keymap.set("n", "<leader>z", "<cmd>ZenMode<CR>")
+		end,
 	},
 	"42Paris/42header",
 	{
