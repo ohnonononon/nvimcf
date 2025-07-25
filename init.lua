@@ -9,7 +9,7 @@ vim.g.have_nerd_font = true
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.colorcolumn = "80"
-vim.opt.scrolloff = 999
+vim.opt.scrolloff = 20
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
@@ -84,9 +84,9 @@ vim.opt.hlsearch = true
 vim.keymap.set("n", "<C-c>", "<cmd>nohl<CR>")
 vim.keymap.set("n", "q", "<nop>")
 
+local focus_state = "off"
 -- focus to keep the cursor at the center of the screen
 local function toggle_focus()
-	local focus_state = "off"
 	if focus_state == "off" then
 		vim.keymap.set("n", "k", "kzz")
 		vim.keymap.set("n", "j", "jzz")
@@ -98,9 +98,10 @@ local function toggle_focus()
 		vim.keymap.set("n", "j", "j")
 		focus_state = "off"
 	end
-	vim.cmd("toggle_focus")
 end
 vim.keymap.set("n", "<leader>t", toggle_focus)
+
+toggle_focus()
 
 -- Navigate through buffers and files
 vim.keymap.set("n", "<leader>x", "<cmd>b#<bar>bd#<CR>")
@@ -118,6 +119,7 @@ vim.keymap.set("t", "<C-k>", "<C-\\><C-N><C-k>")
 
 -- Git integration cmds
 vim.keymap.set("n", "<leader>gp", "<cmd>silent Git push | q<CR>")
+vim.keymap.set("n", "<leader>norm", "<cmd>!norminette > log<CR>")
 
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous [D]iagnostic message" })
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next [D]iagnostic message" })
