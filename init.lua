@@ -1,8 +1,4 @@
---    - :help lua-guide
---    - (or HTML version): https://neovim.io/doc/user/lua-guide.html
-
 -- require("custom.plugins.clipboard")
--- [[ Setting options ]]
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 vim.g.have_nerd_font = true
@@ -15,6 +11,7 @@ vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = false
 vim.opt.swapfile = false
+vim.opt.path:append(".")
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = "a"
@@ -110,7 +107,8 @@ vim.keymap.set("n", "<leader>k", "<cmd>bnext<CR>zz<CR>")
 vim.keymap.set("n", "<leader>j", "<cmd>bprev<CR>zz<CR>")
 vim.keymap.set("n", "<leader>pv", "<cmd>Explore<CR>")
 vim.keymap.set("n", "<leader>ex", "<cmd>.!sh<CR>")
---
+vim.keymap.set("n", "<leader>doc", "<cmd>e ~/Documents/<CR>")
+
 -- terminal keymaps
 vim.keymap.set("t", "<C-h>", "<C-\\><C-N><C-h>")
 vim.keymap.set("t", "<C-l>", "<C-\\><C-N><C-l>")
@@ -143,6 +141,10 @@ vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right win
 vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
 
+-- Fold in markdown
+
+require("ohnonononon.km-folding")
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -167,12 +169,8 @@ end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
 -- [[ Configure and install plugins ]]
---
 --  To check the current status of your plugins, run
 --    :Lazy
---
---  You can press `?` in this menu for help. Use `:q` to close the window
---
 --  To update plugins you can run
 --    :Lazy update
 
@@ -189,19 +187,44 @@ require("lazy").setup({
 		dependencies = { "nvim-lua/plenary.nvim" },
 	},
 	{
-		"folke/zen-mode.nvim",
+		"shortcuts/no-neck-pain.nvim",
 		config = function()
-			require("zen-mode").setup({
-				window = {
-					width = 100,
-					options = {
-						number = true,
-						relativenumber = true,
+			require("no-neck-pain").setup({
+				autocmds = {
+					enableOnVimEnter = true,
+				},
+				width = 100,
+				buffers = {
+					colors = NoNeckPain.bufferOptionsColors,
+					scratchPad = NoNeckPain.buffersOptionsScratchPad,
+					bo = {
+						filetype = "md",
+					},
+					wo = {
+						fillchars = "eob: ",
+					},
+				},
+				integrations = {
+					NvimDAPUI = {
+						position = "none",
+						reopen = true,
 					},
 				},
 			})
-			vim.keymap.set("n", "<leader>z", "<cmd>ZenMode<CR>")
+			NoNeckPain.bufferOptionsColors = {
+				blend = -1,
+			}
+			NoNeckPain.bufferOptions = {
+				enable = true,
+				colors = NoNeckPain.bufferOptionsColors,
+				scratchPad = NoNeckPain.bufferOptionsScratchPad,
+			}
 		end,
+		vim.keymap.set("n", "<leader>z", vim.cmd.NoNeckPain),
+	},
+	{
+		"mbbill/undotree",
+		vim.keymap.set("n", "<leader>und", vim.cmd.UndotreeToggle),
 	},
 	"42Paris/42header",
 	{
@@ -525,13 +548,11 @@ require("lazy").setup({
 			--  You can press `g?` for help in this menu.
 			require("mason").setup()
 
-			-- You can add other tools here that you want Mason to install
-			-- for you, so that they are available from within Neovim.
-			local ensure_installed = vim.tbl_keys(servers or {})
-			vim.list_extend(ensure_installed, {
-				"stylua", -- Used to format Lua code
+			require("mason-tool-installer").setup({
+				ensure_installed = {
+					-- "stylua",
+				},
 			})
-			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
 			require("mason-lspconfig").setup({
 				handlers = {
@@ -564,7 +585,7 @@ require("lazy").setup({
 				}
 			end,
 			formatters_by_ft = {
-				lua = { "stylua" },
+				-- lua = { "stylua" },
 				-- Conform can also run multiple formatters sequentially
 				-- python = { "isort", "black" },
 				--
@@ -805,6 +826,10 @@ require("lazy").setup({
 
 	{
 		require("plugins.dap"),
+		{ import = "plugins" },
+	},
+	{
+		require("plugins.mason-workaround"),
 		{ import = "plugins" },
 	},
 }, {
