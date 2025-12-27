@@ -5,7 +5,7 @@ vim.g.have_nerd_font = true
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.colorcolumn = "80"
-vim.opt.scrolloff = 20
+vim.opt.scrolloff = 8
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
@@ -20,18 +20,18 @@ vim.opt.mouse = "a"
 vim.opt.showmode = false
 
 -- clipboard integration in windows
--- vim.g.clipboard = {
--- 	name = "WslClipboard",
--- 	copy = {
--- 		["+"] = "clip.exe",
--- 		["*"] = "clip.exe",
--- 	},
--- 	paste = {
--- 		["+"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
--- 		["*"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
--- 	},
--- 	cache_enabled = 0,
--- }
+vim.g.clipboard = {
+	name = "WslClipboard",
+	copy = {
+		["+"] = "clip.exe",
+		["*"] = "clip.exe",
+	},
+	paste = {
+		["+"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+		["*"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+	},
+	cache_enabled = 0,
+}
 -- Sync clipboard between OS and Neovim.
 vim.opt.clipboard = "unnamedplus"
 vim.opt.breakindent = true
@@ -106,8 +106,20 @@ vim.keymap.set("n", "<leader>bw", "<cmd>bw<CR>")
 vim.keymap.set("n", "<leader>k", "<cmd>bnext<CR>zz<CR>")
 vim.keymap.set("n", "<leader>j", "<cmd>bprev<CR>zz<CR>")
 vim.keymap.set("n", "<leader>pv", "<cmd>Explore<CR>")
-vim.keymap.set("n", "<leader>ex", "<cmd>.!sh<CR>")
+vim.keymap.set("n", "<leader>exsh", "<cmd>.!sh<CR>")
 vim.keymap.set("n", "<leader>doc", "<cmd>e ~/Documents/<CR>")
+vim.keymap.set("n", "<leader>mre", "<cmd>make<CR>")
+
+vim.keymap.set("n", "<leader>exc", function()
+	local tab = vim.fn.getcompletion(":!./", "cmdline")
+	local first = tab[1]
+	if first then
+		vim.cmd("!" .. first)
+	else
+		print(tab[1])
+	end
+end)
+
 
 -- terminal keymaps
 vim.keymap.set("t", "<C-h>", "<C-\\><C-N><C-h>")
@@ -143,7 +155,7 @@ vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper win
 
 -- Fold in markdown
 
-require("ohnonononon.km-folding")
+-- require("ohnonononon.km-folding")
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -193,9 +205,8 @@ require("lazy").setup({
 				autocmds = {
 					enableOnVimEnter = true,
 				},
-				width = 100,
+				width = 90,
 				buffers = {
-					colors = NoNeckPain.bufferOptionsColors,
 					scratchPad = NoNeckPain.buffersOptionsScratchPad,
 					bo = {
 						filetype = "md",
@@ -204,16 +215,7 @@ require("lazy").setup({
 						fillchars = "eob: ",
 					},
 				},
-				integrations = {
-					NvimDAPUI = {
-						position = "none",
-						reopen = true,
-					},
-				},
 			})
-			NoNeckPain.bufferOptionsColors = {
-				blend = -1,
-			}
 			NoNeckPain.bufferOptions = {
 				enable = true,
 				colors = NoNeckPain.bufferOptionsColors,
@@ -267,7 +269,7 @@ require("lazy").setup({
 			{ "nvim-telescope/telescope-ui-select.nvim" },
 
 			-- Useful for getting pretty icons, but requires a Nerd Font.
-			{ "nvim-tree/nvim-web-devicons", enabled = vim.g.have_nerd_font },
+			{ "nvim-tree/nvim-web-devicons",            enabled = vim.g.have_nerd_font },
 		},
 		config = function()
 			-- Telescope is a fuzzy finder that comes with a lot of different things that
