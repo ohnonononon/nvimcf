@@ -108,9 +108,13 @@ vim.keymap.set("n", "<leader>j", "<cmd>bprev<CR>zz<CR>")
 vim.keymap.set("n", "<leader>pv", "<cmd>Explore<CR>")
 vim.keymap.set("n", "<leader>exsh", "<cmd>.!sh<CR>")
 vim.keymap.set("n", "<leader>doc", "<cmd>e ~/Documents/<CR>")
-vim.keymap.set("n", "<leader>mre", "<cmd>make<CR>")
 
-vim.keymap.set("n", "<leader>exc", function()
+
+local function compile()
+	vim.cmd.make()
+end
+vim.keymap.set("n", "<leader>mke", compile)
+local function exc()
 	local tab = vim.fn.getcompletion(":!./", "cmdline")
 	local first = tab[1]
 	if first then
@@ -118,6 +122,11 @@ vim.keymap.set("n", "<leader>exc", function()
 	else
 		print(tab[1])
 	end
+end
+vim.keymap.set("n", "<leader>exc", exc)
+vim.keymap.set("n", "<leader>cne", function()
+	compile()
+	exc()
 end)
 
 
