@@ -12,10 +12,6 @@ vim.opt.shiftwidth = 4
 vim.opt.expandtab = false
 vim.opt.swapfile = false
 vim.opt.path:append(".")
-
--- Enable mouse mode, can be useful for resizing splits for example!
-vim.opt.mouse = "a"
-
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
 
@@ -103,17 +99,19 @@ toggle_focus()
 -- Navigate through buffers and files
 vim.keymap.set("n", "<leader>x", "<cmd>b#<bar>bd#<CR>")
 vim.keymap.set("n", "<leader>bw", "<cmd>bw<CR>")
-vim.keymap.set("n", "<leader>k", "<cmd>bnext<CR>zz<CR>")
-vim.keymap.set("n", "<leader>j", "<cmd>bprev<CR>zz<CR>")
+vim.keymap.set("n", "<leader>k", "<cmd>bnext<CR>zz")
+vim.keymap.set("n", "<leader>j", "<cmd>bprev<CR>zz")
 vim.keymap.set("n", "<leader>pv", "<cmd>Explore<CR>")
 vim.keymap.set("n", "<leader>exsh", "<cmd>.!sh<CR>")
 vim.keymap.set("n", "<leader>doc", "<cmd>e ~/Documents/<CR>")
+vim.keymap.set("n", "<leader>l", "<cmd>cnext<CR>zz")
+vim.keymap.set("n", "<leader>h", "<cmd>cprev<CR>zz")
+vim.keymap.set("n", "<leader>=", "gg=G<C-o>")
 
 
 local function compile()
 	vim.cmd.make()
 end
-vim.keymap.set("n", "<leader>mke", compile)
 local function exc()
 	local tab = vim.fn.getcompletion(":!./", "cmdline")
 	local first = tab[1]
@@ -123,6 +121,7 @@ local function exc()
 		print(tab[1])
 	end
 end
+vim.keymap.set("n", "<leader>mke", compile)
 vim.keymap.set("n", "<leader>exc", exc)
 vim.keymap.set("n", "<leader>cne", function()
 	compile()
