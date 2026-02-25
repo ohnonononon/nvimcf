@@ -16,18 +16,20 @@ vim.opt.path:append(".")
 vim.opt.showmode = false
 
 -- clipboard integration in windows
-vim.g.clipboard = {
-	name = "WslClipboard",
-	copy = {
-		["+"] = "clip.exe",
-		["*"] = "clip.exe",
-	},
-	paste = {
-		["+"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-		["*"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-	},
-	cache_enabled = 0,
-}
+if vim.fn.has("wsl") == 1 then
+	vim.g.clipboard = {
+		name = "WslClipboard",
+		copy = {
+			["+"] = "clip.exe",
+			["*"] = "clip.exe",
+		},
+		paste = {
+			["+"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+			["*"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+		},
+		cache_enabled = 0,
+	}
+end
 -- Sync clipboard between OS and Neovim.
 vim.opt.clipboard = "unnamedplus"
 vim.opt.breakindent = true
@@ -108,7 +110,6 @@ vim.keymap.set("n", "<leader>l", "<cmd>cnext<CR>zz")
 vim.keymap.set("n", "<leader>h", "<cmd>cprev<CR>zz")
 vim.keymap.set("n", "<leader>=", "gg=G<C-o>")
 
-
 local function compile()
 	vim.cmd.make()
 end
@@ -127,7 +128,6 @@ vim.keymap.set("n", "<leader>cne", function()
 	compile()
 	exc()
 end)
-
 
 -- terminal keymaps
 vim.keymap.set("t", "<C-h>", "<C-\\><C-N><C-h>")
@@ -277,7 +277,7 @@ require("lazy").setup({
 			{ "nvim-telescope/telescope-ui-select.nvim" },
 
 			-- Useful for getting pretty icons, but requires a Nerd Font.
-			{ "nvim-tree/nvim-web-devicons",            enabled = vim.g.have_nerd_font },
+			{ "nvim-tree/nvim-web-devicons", enabled = vim.g.have_nerd_font },
 		},
 		config = function()
 			-- Telescope is a fuzzy finder that comes with a lot of different things that
