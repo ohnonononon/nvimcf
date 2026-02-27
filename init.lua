@@ -64,6 +64,13 @@ vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 vim.opt.inccommand = "split"
 
 --                        HOTKEYS
+vim.api.nvim_create_autocmd("WinClosed", {
+	pattern = "*",
+	callback = function()
+		vim.cmd("wincmd p")
+	end,
+})
+
 -- replace all instances of word hovered by cursor
 vim.keymap.set("n", "<leader>rk", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 
@@ -135,11 +142,23 @@ vim.keymap.set("t", "<C-h>", "<C-\\><C-N><C-h>")
 vim.keymap.set("t", "<C-l>", "<C-\\><C-N><C-l>")
 vim.keymap.set("t", "<C-j>", "<C-\\><C-N><C-j>")
 vim.keymap.set("t", "<C-k>", "<C-\\><C-N><C-k>")
-vim.keymap.set("n", "<leader>t0", function()
+vim.keymap.set("n", "<leader>tp", function()
+	if vim.bo.buftype == "terminal" then
+		vim.cmd.close()
+		return
+	end
+	for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+		if vim.bo[buf].buftype == "terminal" then
+			vim.cmd.split()
+			vim.cmd.resize(8)
+			vim.cmd.buffer(buf)
+			return
+		end
+	end
 	vim.cmd.split()
 	vim.cmd.resize(8)
 	vim.cmd.term()
-end)
+end, { desc = "Toggle [T]erminal [P]ane" })
 
 -- Git integration cmds
 vim.keymap.set("n", "<leader>gp", "<cmd>silent Git push | q<CR>")
