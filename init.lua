@@ -100,6 +100,7 @@ toggle_focus()
 
 -- Navigate through buffers and files
 vim.keymap.set("n", "<leader>x", "<cmd>b#<bar>bd#<CR>")
+vim.keymap.set("n", "<leader>cp", "<cmd>close<CR>", { desc = "Close pane" })
 vim.keymap.set("n", "<leader>bw", "<cmd>bw<CR>")
 vim.keymap.set("n", "<leader>k", "<cmd>bnext<CR>zz")
 vim.keymap.set("n", "<leader>j", "<cmd>bprev<CR>zz")
@@ -134,7 +135,11 @@ vim.keymap.set("t", "<C-h>", "<C-\\><C-N><C-h>")
 vim.keymap.set("t", "<C-l>", "<C-\\><C-N><C-l>")
 vim.keymap.set("t", "<C-j>", "<C-\\><C-N><C-j>")
 vim.keymap.set("t", "<C-k>", "<C-\\><C-N><C-k>")
-vim.keymap.set("n", "<leader>t0", "<C-w>s<cmd>term<CR>")
+vim.keymap.set("n", "<leader>t0", function()
+	vim.cmd.split()
+	vim.cmd.resize(8)
+	vim.cmd.term()
+end)
 
 -- Git integration cmds
 vim.keymap.set("n", "<leader>gp", "<cmd>silent Git push | q<CR>")
