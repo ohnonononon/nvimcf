@@ -173,7 +173,7 @@ end)
 
 -- Git integration cmds
 vim.keymap.set("n", "<leader>gp", function()
-	vim.cmd("silent git push")
+	vim.cmd("silent Git push")
 	CloseNFocus()
 end)
 vim.keymap.set("n", "<leader>norm", "<cmd>!norminette > log<CR>")
