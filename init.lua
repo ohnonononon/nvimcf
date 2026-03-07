@@ -161,20 +161,24 @@ vim.keymap.set("n", "<leader>tp", function()
 	vim.cmd.term()
 end, { desc = "Toggle [T]erminal [P]ane" })
 vim.keymap.set("n", "<leader>tk", function()
-	for _, win in ipairs(vim.api.nvim_list_wins()) do
-		local buf = vim.api.nvim_win_get_buf(win)
-		if vim.bo[buf] and vim.bo[buf].buftype == "terminal" then
-			vim.api.nvim_set_current_win(win)
-			CloseNFocus()
-			return
+		for _, win in ipairs(vim.api.nvim_list_wins()) do
+			local buf = vim.api.nvim_win_get_buf(win)
+			if vim.bo[buf] and vim.bo[buf].buftype == "terminal" then
+				vim.api.nvim_set_current_win(win)
+				CloseNFocus()
+				return
+			end
 		end
-	end
-end)
+	end,
+	{ desc = "[T]erminal [K]ill" })
+
+vim.keymap.set("n", "<leader>-", ":resize 8<CR>", { desc = "Resize to small" })
+vim.keymap.set("n", "<leader>+", ":resize 24<CR>", { desc = "Resize to mid" })
+vim.keymap.set("n", "<leader>^", ":resize 48<CR>", { desc = "Resize to big" })
 
 -- Git integration cmds
 vim.keymap.set("n", "<leader>gp", function()
 	vim.cmd("silent Git push")
-	CloseNFocus()
 end)
 vim.keymap.set("n", "<leader>norm", "<cmd>!norminette > log<CR>")
 
