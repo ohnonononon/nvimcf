@@ -1,3 +1,4 @@
+local utils = require("utils")
 -- require("custom.plugins.clipboard")
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
@@ -62,11 +63,6 @@ vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 
 -- Preview substitutions live, as you type!
 vim.opt.inccommand = "split"
-
-local function CloseNFocus()
-	vim.cmd.close()
-	vim.cmd("wincmd p")
-end
 --                        HOTKEYS
 -- replace all instances of word hovered by cursor
 vim.keymap.set("n", "<leader>rk", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
@@ -82,29 +78,12 @@ vim.opt.cursorline = true
 vim.opt.hlsearch = true
 vim.keymap.set("n", "<C-c>", "<cmd>nohl<CR>")
 vim.keymap.set("n", "q", "<nop>")
-
-local focus_state = "off"
--- focus to keep the cursor at the center of the screen
-local function toggle_focus()
-	if focus_state == "off" then
-		vim.keymap.set("n", "k", "kzz")
-		vim.keymap.set("n", "j", "jzz")
-		vim.keymap.set("n", "<C-d>", "<C-d>zz")
-		vim.keymap.set("n", "<C-u>", "<C-u>zz")
-		focus_state = "on"
-	else
-		vim.keymap.set("n", "k", "k")
-		vim.keymap.set("n", "j", "j")
-		focus_state = "off"
-	end
-end
-vim.keymap.set("n", "<leader>tf", toggle_focus)
-
-toggle_focus()
+vim.keymap.set("n", "<leader>tf", utils.toggle_focus)
+utils.toggle_focus()
 
 -- FILE NAVIGATION AND dsadas
-vim.keymap.set("n", "<leader>x", "<cmd>b#<bar>bd#<CR>")
-vim.keymap.set("n", "<leader>cp", CloseNFocus, { desc = "Close pane" })
+vim.keymap.set("n", "<leader>x", "<cmd>b#<bar>bd#<CR>", { desc = "Close current buffer" })
+vim.keymap.set("n", "<leader>cp", utils.CloseNFocus, { desc = "Close pane" })
 vim.keymap.set("n", "<leader>k", "<cmd>bnext<CR>zz")
 vim.keymap.set("n", "<leader>j", "<cmd>bprev<CR>zz")
 vim.keymap.set("n", "<leader>pv", "<cmd>Explore<CR>")
@@ -114,34 +93,12 @@ vim.keymap.set("n", "<leader>l", "<cmd>cnext<CR>zz")
 vim.keymap.set("n", "<leader>h", "<cmd>cprev<CR>zz")
 vim.keymap.set("n", "<leader>=", "gg=G<C-o>zz")
 
-local function compile()
-	vim.cmd.make()
-end
-local function exc()
-	local tab = vim.fn.getcompletion(":!./", "cmdline")
-	local first = tab[1]
-	if first then
-		vim.cmd("!" .. first)
-	else
-		print(tab[1])
-	end
-end
-vim.keymap.set("n", "<leader>mke", compile)
-vim.keymap.set("n", "<leader>exc", exc)
+vim.keymap.set("n", "<leader>mke", utils.compile)
+vim.keymap.set("n", "<leader>exc", utils.exc)
 vim.keymap.set("n", "<leader>cne", function()
-	compile()
-	exc()
+	utils.compile()
+	utils.exc()
 end)
-
-local function close_term()
-	for _, win in ipairs(vim.api.nvim_list_wins()) do
-		local buf = vim.api.nvim_win_get_buf(win)
-		if vim.bo[buf] and vim.bo[buf].buftype == "terminal" then
-			vim.api.nvim_set_current_win(win)
-			CloseNFocus()
-		end
-	end
-end
 
 -- terminal keymaps
 -- vim.keymap.set("t", "<C-c>", "<C-\\><C-N>")
@@ -149,40 +106,9 @@ end
 -- vim.keymap.set("t", "<C-l>", "<C-\\><C-N><C-l>")
 -- vim.keymap.set("t", "<C-j>", "<C-\\><C-N><C-j>")
 -- vim.keymap.set("t", "<C-k>", "<C-\\><C-N><C-k>")
-vim.keymap.set("n", "<leader>to", function()
-	if vim.bo.buftype == "terminal" then
-		CloseNFocus()
-		return
-	end
-	for _, win in ipairs(vim.api.nvim_list_wins()) do
-		local buf = vim.api.nvim_win_get_buf(win)
-		if vim.bo[buf] and vim.bo[buf].buftype == "terminal" then
-			vim.api.nvim_set_current_win(win)
-			return
-		end
-	end
-	vim.cmd.split()
-	vim.cmd.resize(8)
-	for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-		if vim.bo[buf].buftype == "terminal" then
-			vim.cmd.buffer(buf)
-			return
-		end
-	end
-	vim.cmd.term()
-end, { desc = "[T]erminal [O]pen. If open, Focus." })
-vim.keymap.set("n", "<leader>tk", function()
-		for _, win in ipairs(vim.api.nvim_list_wins()) do
-			local buf = vim.api.nvim_win_get_buf(win)
-			if vim.bo[buf] and vim.bo[buf].buftype == "terminal" then
-				vim.api.nvim_set_current_win(win)
-				CloseNFocus()
-				return
-			end
-		end
-	end,
-	{ desc = "[T]erminal [K]ill" })
-vim.keymap.set("n", "<leader>tp", close_term, { desc = "Terminal: Toggle Pane" })
+vim.keymap.set("n", "<leader>to", utils.open_term, { desc = "[T]erminal [O]pen. If open, Focus." })
+vim.keymap.set("n", "<leader>tp", utils.close_term_pane, { desc = "Terminal: Toggle Pane" })
+vim.keymap.set("t", "<leader>tp", utils.close_term_finside, { desc = "Exit terminal insert mode and close pane" })
 
 vim.keymap.set("n", "<leader>-", ":resize 8<CR>", { desc = "Resize to small" })
 vim.keymap.set("n", "<leader>+", ":resize 24<CR>", { desc = "Resize to mid" })
@@ -217,8 +143,6 @@ vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower win
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
 
 -- Fold in markdown
-
--- require("ohnonononon.km-folding")
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -259,7 +183,7 @@ require("lazy").setup({
 	{
 		"ThePrimeagen/harpoon",
 		branch = "harpoon2",
-		dependencies = { "nvim-lua/plenary.nvim" },
+		pidependencies = { "nvim-lua/plenary.nvim" },
 	},
 	{
 		"shortcuts/no-neck-pain.nvim",
