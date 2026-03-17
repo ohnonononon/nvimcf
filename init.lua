@@ -254,6 +254,13 @@ require("lazy").setup({
 			local builtin = require("telescope.builtin")
 			local action_state = require("telescope.actions.state")
 
+			vim.keymap.set("n", "<leader>ge", function()
+				vim.ui.input({ prompt = "Empty commit message: " }, function(msg)
+					if msg then
+						vim.fn.system("git commit --allow-empty -m " .. vim.fn.shellescape(msg))
+					end
+				end)
+			end, { desc = "[G]it [E]mpty commit" })
 			vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "[S]earch [H]elp" })
 			vim.keymap.set("n", "<leader>sk", builtin.keymaps, { desc = "[S]earch [K]eymaps" })
 			vim.keymap.set("n", "<leader>sf", builtin.find_files, { desc = "[S]earch [F]iles" })
