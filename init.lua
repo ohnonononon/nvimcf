@@ -63,35 +63,14 @@ vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 
 -- Preview substitutions live, as you type!
 vim.opt.inccommand = "split"
---                        HOTKEYS
--- replace all instances of word hovered by cursor
-vim.keymap.set("n", "<leader>rk", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
-
--- Save in + register
-vim.keymap.set("n", "<leader>Y", [["+Y]])
-vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
-
--- Show which line your cursor is on
 vim.opt.cursorline = true
-
--- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
-vim.keymap.set("n", "<C-c>", "<cmd>nohl<CR>")
-vim.keymap.set("n", "q", "<nop>")
-vim.keymap.set("n", "<leader>tf", utils.toggle_focus)
 utils.toggle_focus()
 
--- FILE NAVIGATION AND dsadas
-vim.keymap.set("n", "<leader>x", "<cmd>b#<bar>bd#<CR>", { desc = "Close current buffer" })
-vim.keymap.set("n", "<leader>cp", utils.CloseNFocus, { desc = "Close pane" })
-vim.keymap.set("n", "<leader>k", "<cmd>bnext<CR>zz")
-vim.keymap.set("n", "<leader>j", "<cmd>bprev<CR>zz")
-vim.keymap.set("n", "<leader>pv", "<cmd>Explore<CR>")
-vim.keymap.set("n", "<leader>exsh", "<cmd>.!sh<CR>")
-vim.keymap.set("n", "<leader>doc", "<cmd>e ~/Documents/<CR>")
-vim.keymap.set("n", "<leader>l", "<cmd>cnext<CR>zz")
-vim.keymap.set("n", "<leader>h", "<cmd>cprev<CR>zz")
-vim.keymap.set("n", "<leader>=", "gg=G<C-o>zz")
+--                        HOTKEYS
+local remaps = require("remaps")
+vim.keymap.set("n", "<C-c>", "<cmd>nohl<CR>")
+vim.keymap.set("n", "q", "<nop>")
 
 vim.keymap.set("n", "<leader>mke", utils.compile)
 vim.keymap.set("n", "<leader>exc", utils.exc)
@@ -100,56 +79,21 @@ vim.keymap.set("n", "<leader>cne", function()
 	utils.exc()
 end)
 
--- terminal keymaps
--- vim.keymap.set("t", "<C-c>", "<C-\\><C-N>")
--- vim.keymap.set("t", "<C-h>", "<C-\\><C-N><C-h>")
--- vim.keymap.set("t", "<C-l>", "<C-\\><C-N><C-l>")
--- vim.keymap.set("t", "<C-j>", "<C-\\><C-N><C-j>")
--- vim.keymap.set("t", "<C-k>", "<C-\\><C-N><C-k>")
-vim.keymap.set("n", "<leader>to", utils.open_term, { desc = "[T]erminal [O]pen. If open, Focus." })
-vim.keymap.set("n", "<leader>tp", utils.close_term_pane, { desc = "Terminal: Toggle Pane" })
-vim.keymap.set("t", "<leader>tp", utils.close_term_finside, { desc = "Exit terminal insert mode and close pane" })
-
-vim.keymap.set("n", "<leader>-", ":resize 8<CR>", { desc = "Resize to small" })
-vim.keymap.set("n", "<leader>+", ":resize 24<CR>", { desc = "Resize to mid" })
-vim.keymap.set("n", "<leader>^", ":resize 48<CR>", { desc = "Resize to big" })
-
 -- Git integration cmds
 vim.keymap.set("n", "<leader>gp", function()
 	vim.cmd("silent Git push")
 end)
-vim.keymap.set("n", "<leader>norm", "<cmd>!norminette > log<CR>")
+
 
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous [D]iagnostic message" })
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next [D]iagnostic message" })
 vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostic [E]rror messages" })
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
 
--- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
--- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
--- is not what someone will guess without a bit more experience.
---
--- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
--- or just use <C-\><C-n> to exit terminal mode
-vim.keymap.set("t", "<C-c><C-c>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
-
--- Keybinds to make split navigation easier.
---  Use CTRL+<hjkl> to switch between windows
-
---  See `:help wincmd` for a list of all window commands
-vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left window" })
-vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right window" })
-vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
-vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
-
--- Fold in markdown
-
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
 -- Highlight when yanking (copying) text
---  Try it with `yap` in normal mode
---  See `:help vim.highlight.on_yank()`
 vim.api.nvim_create_autocmd("TextYankPost", {
 	desc = "Highlight when yanking (copying) text",
 	group = vim.api.nvim_create_augroup("kickstart-highlight-yank", { clear = true }),
