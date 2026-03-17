@@ -112,7 +112,7 @@ vim.keymap.set("n", "<leader>exsh", "<cmd>.!sh<CR>")
 vim.keymap.set("n", "<leader>doc", "<cmd>e ~/Documents/<CR>")
 vim.keymap.set("n", "<leader>l", "<cmd>cnext<CR>zz")
 vim.keymap.set("n", "<leader>h", "<cmd>cprev<CR>zz")
-vim.keymap.set("n", "<leader>=", "gg=G<C-o>")
+vim.keymap.set("n", "<leader>=", "gg=G<C-o>zz")
 
 local function compile()
 	vim.cmd.make()
@@ -133,12 +133,23 @@ vim.keymap.set("n", "<leader>cne", function()
 	exc()
 end)
 
+local function close_term()
+	for _, win in ipairs(vim.api.nvim_list_wins()) do
+		local buf = vim.api.nvim_win_get_buf(win)
+		if vim.bo[buf] and vim.bo[buf].buftype == "terminal" then
+			vim.api.nvim_set_current_win(win)
+			CloseNFocus()
+		end
+	end
+end
+
 -- terminal keymaps
-vim.keymap.set("t", "<C-h>", "<C-\\><C-N><C-h>")
-vim.keymap.set("t", "<C-l>", "<C-\\><C-N><C-l>")
-vim.keymap.set("t", "<C-j>", "<C-\\><C-N><C-j>")
-vim.keymap.set("t", "<C-k>", "<C-\\><C-N><C-k>")
-vim.keymap.set("n", "<leader>tp", function()
+-- vim.keymap.set("t", "<C-c>", "<C-\\><C-N>")
+-- vim.keymap.set("t", "<C-h>", "<C-\\><C-N><C-h>")
+-- vim.keymap.set("t", "<C-l>", "<C-\\><C-N><C-l>")
+-- vim.keymap.set("t", "<C-j>", "<C-\\><C-N><C-j>")
+-- vim.keymap.set("t", "<C-k>", "<C-\\><C-N><C-k>")
+vim.keymap.set("n", "<leader>to", function()
 	if vim.bo.buftype == "terminal" then
 		CloseNFocus()
 		return
@@ -159,7 +170,7 @@ vim.keymap.set("n", "<leader>tp", function()
 		end
 	end
 	vim.cmd.term()
-end, { desc = "Toggle [T]erminal [P]ane" })
+end, { desc = "[T]erminal [O]pen. If open, Focus." })
 vim.keymap.set("n", "<leader>tk", function()
 		for _, win in ipairs(vim.api.nvim_list_wins()) do
 			local buf = vim.api.nvim_win_get_buf(win)
@@ -171,6 +182,7 @@ vim.keymap.set("n", "<leader>tk", function()
 		end
 	end,
 	{ desc = "[T]erminal [K]ill" })
+vim.keymap.set("n", "<leader>tp", close_term, { desc = "Terminal: Toggle Pane" })
 
 vim.keymap.set("n", "<leader>-", ":resize 8<CR>", { desc = "Resize to small" })
 vim.keymap.set("n", "<leader>+", ":resize 24<CR>", { desc = "Resize to mid" })
