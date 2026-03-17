@@ -82,6 +82,7 @@ end)
 -- Git integration cmds
 vim.keymap.set("n", "<leader>gp", function()
 	vim.cmd("silent Git push")
+	utils.CloseNFocus()
 end)
 
 
